@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Barber Studio – Chat</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    /* ── Chat bubble (embedded brug) ── */
+    #chat-launcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #c9a84c;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(201,168,76,.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      transition: transform .2s;
+      z-index: 9999;
+    }
+    #chat-launcher:hover { transform: scale(1.1); }
+
+    /* ── Chat vindue ── */
+    #chat-window {
+      position: fixed;
+      bottom: 96px;
+      right: 24px;
+      width: 360px;
+      max-height: 560px;
+      background: #1e1e1e;
+      border-radius: 16px;
+      box-shadow: 0 8px 40px rgba(0,0,0,.6);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 9998;
+      transform: scale(0);
+      transform-origin: bottom right;
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    #chat-window.open { transform: scale(1); }
+
+    /* Header */
+    .chat-header {
+      background: linear-gradient(135deg, #111 0%, #2a2a2a 100%);
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid #333;
+    }
+    .chat-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #c9a84c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .chat-header-text h3 {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .chat-header-text span {
+      color: #4caf50;
+      font-size: 12px;
+    }
+    .chat-header-text span::before {
+      content: '● ';
+      font-size: 10px;
+    }
+
+    /* Beskeder */
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: #444 transparent;
+    }
+
+    .msg {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.5;
+      animation: fadeUp .2s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .msg.bot {
+      background: #2a2a2a;
+      color: #e0e0e0;
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+    }
+    .msg.user {
+      background: #c9a84c;
+      color: #111;
+      font-weight: 500;
+      border-bottom-right-radius: 4px;
+      align-self: flex-end;
+    }
+
+    /* Hurtigvalg knapper */
+    #quick-replies {
+      padding: 8px 16px 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .qr-btn {
+      background: transparent;
+      border: 1px solid #c9a84c;
+      color: #c9a84c;
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background .15s, color .15s;
+    }
+    .qr-btn:hover { background: #c9a84c; color: #111; }
+
+    /* Input */
+    .chat-input-row {
+      display: flex;
+      padding: 12px 16px;
+      gap: 8px;
+      border-top: 1px solid #2f2f2f;
+    }
+    #chat-input {
+      flex: 1;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 20px;
+      padding: 9px 14px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    #chat-input:focus { border-color: #c9a84c; }
+    #chat-input::placeholder { color: #666; }
+
+    #send-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #c9a84c;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .15s;
+      flex-shrink: 0;
+    }
+    #send-btn:hover { background: #b8933e; }
+
+    /* Demo-ramme (til preview) */
+    .demo-label {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
+      color: #aaa;
+      font-size: 12px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="demo-label">✂️ The Barber Studio — Chat Widget Preview</div>
+
+<button id="chat-launcher" title="Chat med os">✂️</button>
+
+<div id="chat-window">
+  <div class="chat-header">
+    <div class="chat-avatar">✂️</div>
+    <div class="chat-header-text">
+      <h3>The Barber Studio</h3>
+      <span>Online nu</span>
+    </div>
+  </div>
+
+  <div id="chat-messages"></div>
+
+  <div id="quick-replies"></div>
+
+  <div class="chat-input-row">
+    <input id="chat-input" type="text" placeholder="Skriv din besked…" autocomplete="off" />
+    <button id="send-btn">➤</button>
+  </div>
+</div>
+
+<script>
+  // ── Data ──────────────────────────────────────────────
+  const INFO = {
+    navn: "The Barber Studio",
+    adresse: "Hedehusene, Storkøbenhavn",
+    website: "thebarberstudio.dk",
+    telefon: null, // tilføj hvis tilgængeligt
+    åbningstider: {
+      "Mandag–fredag": "09:30–18:00",
+      "Lørdag–søndag": "09:00–16:00"
+    },
+    services: [
+      { navn: "Hovedklipning",               pris: "200 kr" },
+      { navn: "Herre, farve",                pris: "fra 250 kr" },
+      { navn: "Herre, striber",              pris: "fra 250 kr" },
+      { navn: "Skægtrimning (uden hårklip)", pris: "70 kr" },
+      { navn: "Børn under 12 år",            pris: "180 kr" }
+    ],
+    tilbud: "🎉 Åbningstilbud: Bliv klippet for kun 99 kr!",
+    instagram: "@thebarberstudio.dk",
+    om: "The Barber Studio er en eksklusiv herrefrisør beliggende centralt i Hedehusene i Storkøbenhavn. Vi tilbyder professionelle klipninger, farvning og skægpleje i et stilfuldt barbershop-miljø."
+  };
+
+  // ── Svar-logik ────────────────────────────────────────
+  function getReply(input) {
+    const t = input.toLowerCase().trim();
+
+    // Priser / services
+    if (/pris|kost|hvad kost|service|tilbud|klip|farv|strib|skæg|børn/i.test(t)) {
+      const liste = INFO.services.map(s => `• ${s.navn}: <b>${s.pris}</b>`).join("<br>");
+      return `Her er vores priser:<br><br>${liste}<br><br>${INFO.tilbud}`;
+    }
+
+    // Åbningstider
+    if (/åbn|lukk|tid|hvornår|lørdag|søndag|mandag|tirsdag|onsdag|torsdag|fredag|weekend/i.test(t)) {
+      const tider = Object.entries(INFO.åbningstider)
+        .map(([dag, tid]) => `• ${dag}: <b>${tid}</b>`).join("<br>");
+      return `Vores åbningstider:<br><br>${tider}<br><br>OBS: Tjek vores hjemmeside for eventuelle ændringer i helligdage.`;
+    }
+
+    // Adresse / lokation
+    if (/adress|hvor|find|beliggen|hedehus|storkøb|lokation/i.test(t)) {
+      return `Vi holder til i <b>Hedehusene, Storkøbenhavn</b>. Find os på <b>${INFO.website}</b> for præcis adresse og kort 📍`;
+    }
+
+    // Booking / time
+    if (/book|time|bestil|reservation|ledig/i.test(t)) {
+      return `Du kan booke en tid direkte på vores hjemmeside:<br><b>${INFO.website}</b><br><br>Du er også altid velkommen til at kigge forbi i åbningstiden! ✂️`;
+    }
+
+    // Om stedet
+    if (/hvem|om jer|om os|barber studio|hvad er/i.test(t)) {
+      return INFO.om;
+    }
+
+    // Instagram / sociale medier
+    if (/instagram|social|følg|billeder|insta/i.test(t)) {
+      return `Følg os på Instagram for inspiration og nyheder:<br><b>${INFO.instagram}</b> 📸`;
+    }
+
+    // Kontakt
+    if (/kontakt|telefon|ring|email|mail/i.test(t)) {
+      return `Du kan kontakte os via:<br>• Hjemmeside: <b>${INFO.website}</b><br>• Instagram: <b>${INFO.instagram}</b><br><br>Vi svarer hurtigst muligt! 😊`;
+    }
+
+    // Tilbud
+    if (/tilbud|rabat|billig|åbning/i.test(t)) {
+      return `${INFO.tilbud}<br><br>Hold øje med vores hjemmeside og Instagram for kommende tilbud.`;
+    }
+
+    // Hilsener
+    if (/^(hej|hallo|hi|hey|goddag|god dag)/i.test(t)) {
+      return `Hej! Velkommen til The Barber Studio 👋<br>Jeg kan hjælpe dig med info om priser, åbningstider, booking og meget mere. Hvad vil du vide?`;
+    }
+
+    // Tak
+    if (/tak|tusind|super|fedt|nice/i.test(t)) {
+      return `Selv tak! Vi glæder os til at se dig i stolen. ✂️ Er der andet jeg kan hjælpe med?`;
+    }
+
+    // Fallback
+    return `Det er jeg ikke helt sikker på – men du er velkommen til at kontakte os direkte på <b>${INFO.website}</b> eller Instagram <b>${INFO.instagram}</b>, så hjælper vi dig gerne! 😊`;
+  }
+
+  // ── Hurtigvalg ────────────────────────────────────────
+  const QUICK = [
+    "Priser 💈",
+    "Åbningstider 🕐",
+    "Book en tid 📅",
+    "Find os 📍",
+    "Tilbud 🎉"
+  ];
+
+  // ── UI ────────────────────────────────────────────────
+  const launcher  = document.getElementById('chat-launcher');
+  const win       = document.getElementById('chat-window');
+  const messages  = document.getElementById('chat-messages');
+  const qrArea    = document.getElementById('quick-replies');
+  const input     = document.getElementById('chat-input');
+  const sendBtn   = document.getElementById('send-btn');
+
+  let opened = false;
+
+  launcher.addEventListener('click', () => {
+    opened = !opened;
+    win.classList.toggle('open', opened);
+    launcher.textContent = opened ? '✕' : '✂️';
+    if (opened && messages.children.length === 0) {
+      botMsg("Hej! Jeg er din virtuelle assistent hos <b>The Barber Studio</b> i Hedehusene ✂️<br><br>Hvad kan jeg hjælpe dig med i dag?");
+      renderQuickReplies();
+    }
+    if (opened) setTimeout(() => input.focus(), 300);
+  });
+
+  function botMsg(html) {
+    const el = document.createElement('div');
+    el.className = 'msg bot';
+    el.innerHTML = html;
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function userMsg(text) {
+    const el = document.createElement('div');
+    el.className = 'msg user';
+    el.textContent = text;
+    messages.appendChild(el);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function renderQuickReplies() {
+    qrArea.innerHTML = '';
+    QUICK.forEach(label => {
+      const btn = document.createElement('button');
+      btn.className = 'qr-btn';
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        qrArea.innerHTML = '';
+        handleSend(label);
+      });
+      qrArea.appendChild(btn);
+    });
+  }
+
+  function handleSend(text) {
+    if (!text.trim()) return;
+    userMsg(text);
+    input.value = '';
+
+    // Lille forsinkelse så det føles naturligt
+    setTimeout(() => {
+      botMsg(getReply(text));
+    }, 350);
+  }
+
+  sendBtn.addEventListener('click', () => handleSend(input.value));
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleSend(input.value);
+  });
+
+  // Auto-åbn på desktop efter 2 sek (valgfrit – kommenter ud for at slå fra)
+  // setTimeout(() => { if (!opened) launcher.click(); }, 2000);
+</script>
+</body>
+</html>
