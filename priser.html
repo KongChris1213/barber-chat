@@ -173,6 +173,98 @@
     }
     .footnote a { color: var(--gold); text-decoration: none; }
 
+    /* ── Demo banner sektion ── */
+    .demo-section {
+      max-width: 780px;
+      margin: 60px auto 0;
+    }
+    .demo-section h2 {
+      text-align: center;
+      font-size: 22px;
+      color: var(--green);
+      margin-bottom: 6px;
+    }
+    .demo-section > p {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .demo-card {
+      background: linear-gradient(135deg, #0d1f0d, #131f13);
+      border: 1.5px solid var(--green);
+      border-radius: 18px;
+      padding: 32px 36px;
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      box-shadow: 0 0 40px rgba(76,175,80,.1);
+    }
+    .demo-left { flex: 1; }
+    .demo-left h3 {
+      font-size: 24px;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .demo-left .demo-tag {
+      display: inline-block;
+      background: rgba(76,175,80,.15);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .demo-left p {
+      color: #aaa;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+    .demo-left p strong { color: var(--green); }
+    .demo-right {
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .demo-price-big {
+      font-size: 52px;
+      font-weight: 900;
+      color: var(--green);
+      line-height: 1;
+    }
+    .demo-price-big span { font-size: 18px; font-weight: 400; color: var(--muted); }
+    .demo-price-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 4px;
+      margin-bottom: 16px;
+    }
+    .demo-cta {
+      display: block;
+      padding: 12px 28px;
+      background: var(--green);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 700;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background .15s;
+      white-space: nowrap;
+    }
+    .demo-cta:hover { background: #3d9e40; }
+    .demo-fine {
+      font-size: 11px;
+      color: #444;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 700px) {
+      .demo-card { flex-direction: column; text-align: center; gap: 20px; }
+    }
     @media (max-width: 600px) {
       .pricing-grid { grid-template-columns: 1fr; }
     }
@@ -308,6 +400,30 @@
     <button class="pkg-cta">Vælg Premium</button>
   </div>
 
+</div>
+
+<!-- DEMO SEKTION -->
+<div class="demo-section">
+  <h2>🎁 Prøv det risikofrit først</h2>
+  <p>Ikke sikker endnu? Start med vores demo-tilbud — ingen binding, ingen overraskelser.</p>
+  <div class="demo-card">
+    <div class="demo-left">
+      <div class="demo-tag">✨ Eksklusivt demo-tilbud</div>
+      <h3>Prøveperiode — 1 måned gratis</h3>
+      <p>
+        <strong>0 kr. i opstartsgebyr.</strong> Ingen månedligt abonnement den første måned.<br><br>
+        Du betaler kun for de AI-tokens der faktisk bruges — typisk <strong>50–150 kr/md.</strong> for en lille shop.
+        Det er alt. Ingen skjulte gebyrer, ingen automatisk fornyelse uden din godkendelse.<br><br>
+        Kan du se værdien efter én måned, fortsætter vi på den pakke der passer dig. Kan du ikke — siger du bare stop. 🤝
+      </p>
+    </div>
+    <div class="demo-right">
+      <div class="demo-price-big">0 <span>kr.</span></div>
+      <div class="demo-price-sub">+ kun token-forbrug<br>(kostpris + 20%)</div>
+      <button class="demo-cta">Start demo nu</button>
+    </div>
+  </div>
+  <p class="demo-fine">Demo-perioden inkluderer: AI chat konfigureret til din shop · Installeret på hjemmesiden · Månedlig afregning af AI-forbrug · Ingen opsigelsesgebyr</p>
 </div>
 
 <p class="footnote">
