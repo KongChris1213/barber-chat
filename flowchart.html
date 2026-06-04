@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Barber Studio – AI Vækststrategi</title>
+  <style>
+    :root {
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --dark: #111;
+      --card: #1e1e1e;
+      --card2: #252525;
+      --text: #e0e0e0;
+      --muted: #888;
+      --green: #4caf50;
+      --blue: #4a9eff;
+      --purple: #9c6fff;
+      --red: #ff6b6b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      padding: 40px 20px 80px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      color: var(--gold);
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .subtitle {
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 48px;
+    }
+
+    /* ── Faser ── */
+    .phases {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 860px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    /* Lodret linje */
+    .phases::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--gold), var(--purple));
+      transform: translateX(-50%);
+      z-index: 0;
+    }
+
+    .phase {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 48px;
+      position: relative;
+      z-index: 1;
+    }
+    .phase:nth-child(odd) { flex-direction: row; }
+    .phase:nth-child(even) { flex-direction: row-reverse; }
+
+    /* Midte-badge */
+    .phase-badge {
+      min-width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      border: 3px solid var(--dark);
+      box-shadow: 0 0 0 2px var(--gold);
+      background: var(--card);
+      z-index: 2;
+    }
+
+    .phase-card {
+      background: var(--card);
+      border-radius: 14px;
+      padding: 20px 22px;
+      flex: 1;
+      border-left: 3px solid var(--gold);
+      box-shadow: 0 4px 20px rgba(0,0,0,.4);
+      transition: transform .2s;
+    }
+    .phase:nth-child(even) .phase-card { border-left: none; border-right: 3px solid var(--purple); }
+    .phase-card:hover { transform: translateY(-3px); }
+
+    .phase-tag {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .phase:nth-child(even) .phase-tag { color: var(--purple); }
+
+    .phase-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .phase-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
+    /* Feature pills */
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .feat {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+    .feat.green  { background: rgba(76,175,80,.15);  color: var(--green);  }
+    .feat.blue   { background: rgba(74,158,255,.15); color: var(--blue);   }
+    .feat.gold   { background: rgba(201,168,76,.15); color: var(--gold);   }
+    .feat.purple { background: rgba(156,111,255,.15);color: var(--purple); }
+    .feat.red    { background: rgba(255,107,107,.15);color: var(--red);    }
+
+    /* ROI badge */
+    .roi {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--green);
+      font-weight: 600;
+    }
+    .roi::before { content: '💰 '; }
+
+    /* ── Upselling sektion ── */
+    .upsell-section {
+      max-width: 860px;
+      margin: 60px auto 0;
+    }
+    .upsell-section h2 {
+      font-size: 20px;
+      color: var(--gold);
+      margin-bottom: 6px;
+      text-align: center;
+    }
+    .upsell-section p {
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 28px;
+    }
+    .upsell-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    .upsell-card {
+      background: var(--card2);
+      border-radius: 12px;
+      padding: 18px 20px;
+      border-top: 3px solid var(--gold);
+    }
+    .upsell-card h4 { color: #fff; font-size: 14px; margin-bottom: 6px; }
+    .upsell-card p  { color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .upsell-card .upsell-ex {
+      margin-top: 10px;
+      background: rgba(201,168,76,.08);
+      border-left: 2px solid var(--gold);
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--gold-light);
+      font-style: italic;
+    }
+
+    /* ── Sammenfatning ── */
+    .summary {
+      max-width: 860px;
+      margin: 48px auto 0;
+      background: linear-gradient(135deg, #1a1a1a, #222);
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 20px;
+      text-align: center;
+    }
+    .stat-num  { font-size: 32px; font-weight: 800; color: var(--gold); }
+    .stat-label{ font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    @media (max-width: 600px) {
+      .phases::before { left: 28px; }
+      .phase, .phase:nth-child(even) { flex-direction: column !important; }
+      .phase-badge { align-self: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<h1>✂️ The Barber Studio</h1>
+<p class="subtitle">AI Vækststrategi — Fra chat-bot til fuld digital forretning</p>
+
+<div class="phases">
+
+  <!-- Fase 1 -->
+  <div class="phase">
+    <div class="phase-card">
+      <div class="phase-tag">Fase 1 — Nu</div>
+      <div class="phase-title">Chat-assistent på hjemmesiden</div>
+      <div class="phase-desc">Kunder kan spørge om priser, åbningstider og ydelser døgnet rundt uden at ringe. Reducerer unødvendige henvendelser og giver et professionelt førsteindtryk.</div>
+      <div class="features">
+        <span class="feat green">Priser &amp; services</span>
+        <span class="feat green">Åbningstider</span>
+        <span class="feat green">Find os</span>
+        <span class="feat gold">Åbningstilbud 99 kr</span>
+      </div>
+      <div class="roi">Sparer ~2–3 opkald om dagen</div>
+    </div>
+    <div class="phase-badge">💬</div>
+    <div style="flex:1"></div>
+  </div>
+
+  <!-- Fase 2 -->
+  <div class="phase">
+    <div style="flex:1"></div>
+    <div class="phase-badge">📅</div>
+    <div class="phase-card">
+      <div class="phase-tag">Fase 2 — Næste skridt</div>
+      <div class="phase-title">AI-booking via SimplyBook.me</div>
+      <div class="phase-desc">Chatten kan vise ledige tider direkte fra SimplyBook og booke kunden — uden at kunden forlader siden. Fungerer 24/7, også mens der klippes.</div>
+      <div class="features">
+        <span class="feat blue">Live ledige tider</span>
+        <span class="feat blue">Booking i chatten</span>
+        <span class="feat blue">Bekræftelse på SMS/mail</span>
+        <span class="feat blue">Vælg frisør</span>
+      </div>
+      <div class="roi">+15–25% flere bookinger (ingen drop-off)</div>
+    </div>
+  </div>
+
+  <!-- Fase 3 -->
+  <div class="phase">
+    <div class="phase-card">
+      <div class="phase-tag">Fase 3 — Upselling</div>
+      <div class="phase-title">Intelligent merssalg under booking</div>
+      <div class="phase-desc">Når en kunde booker en klipning, foreslår AI'en automatisk relevante tilvalg baseret på hvad de bestiller. Naturligt — ikke påtrængende.</div>
+      <div class="features">
+        <span class="feat gold">Klipning → + skægtrimning</span>
+        <span class="feat gold">Klipning → + hårplejepakke</span>
+        <span class="feat gold">Børneklip → + styling gel</span>
+        <span class="feat gold">Farve → + treatment</span>
+      </div>
+      <div class="roi">+40–80 kr ekstra pr. booking i snit</div>
+    </div>
+    <div class="phase-badge">💰</div>
+    <div style="flex:1"></div>
+  </div>
+
+  <!-- Fase 4 -->
+  <div class="phase">
+    <div style="flex:1"></div>
+    <div class="phase-badge">🔁</div>
+    <div class="phase-card">
+      <div class="phase-tag">Fase 4 — Fastholdelse</div>
+      <div class="phase-title">Automatiske påmindelser &amp; genbooking</div>
+      <div class="phase-desc">AI sender automatisk SMS/mail 4–6 uger efter et besøg: "Det er snart tid for en ny klipning — skal vi finde en tid?" Kunder bliver til stamkunder.</div>
+      <div class="features">
+        <span class="feat purple">Automatisk SMS/mail</span>
+        <span class="feat purple">Personlig hilsen</span>
+        <span class="feat purple">Direkte bookinglink</span>
+        <span class="feat purple">Sæsonbestemte tilbud</span>
+      </div>
+      <div class="roi">Stamkunde returnerer 6–8x om året vs. 3–4x</div>
+    </div>
+  </div>
+
+  <!-- Fase 5 -->
+  <div class="phase">
+    <div class="phase-card">
+      <div class="phase-tag">Fase 5 — Data &amp; indsigt</div>
+      <div class="phase-title">Simpelt dashboard til ejeren</div>
+      <div class="phase-desc">Et lille overblik der viser: mest populære ydelse, travleste dage, churn-risiko kunder (ikke set i 8+ uger), og omsætning pr. ydelse.</div>
+      <div class="features">
+        <span class="feat red">Populære tider</span>
+        <span class="feat red">Omsætning pr. service</span>
+        <span class="feat red">Kunder i risiko for at forsvinde</span>
+        <span class="feat red">Konverteringsrate fra chat</span>
+      </div>
+      <div class="roi">Bedre beslutninger = færre tomme tider</div>
+    </div>
+    <div class="phase-badge">📊</div>
+    <div style="flex:1"></div>
+  </div>
+
+</div>
+
+<!-- Upselling sektion -->
+<div class="upsell-section">
+  <h2>💡 Konkrete Upselling-eksempler i chatten</h2>
+  <p>Hvad AI'en kan sige automatisk under en booking-samtale</p>
+  <div class="upsell-grid">
+    <div class="upsell-card">
+      <h4>✂️ Klipning → Skæg</h4>
+      <p>Når kunden booker en klipning, tilbyder chatten skægtrimning som tilvalg.</p>
+      <div class="upsell-ex">"Vil du også have skæget trimmet? Det koster kun 70 kr extra og tager 10 min."</div>
+    </div>
+    <div class="upsell-card">
+      <h4>🎨 Klipning → Farve</h4>
+      <p>Kunder der kun booker klipning får et kort hint om farvemuligheder.</p>
+      <div class="upsell-ex">"Vi tilbyder også farve og striber fra 250 kr — skal jeg finde en tid med lidt ekstra plads?"</div>
+    </div>
+    <div class="upsell-card">
+      <h4>👦 Børn → Pakke</h4>
+      <p>Forældre der booker til børn tilbydes at booke til sig selv samme dag.</p>
+      <div class="upsell-ex">"Vil du booke en klipning til dig selv samme dag? Så er I der allerede — spar en tur."</div>
+    </div>
+    <div class="upsell-card">
+      <h4>🔁 Genbooking</h4>
+      <p>Lige efter bekræftelse tilbydes næste tid med det samme.</p>
+      <div class="upsell-ex">"Perfekt! Vil du allerede nu booke din næste klipning om 4–5 uger, så du altid har en tid?"</div>
+    </div>
+    <div class="upsell-card">
+      <h4>🎁 Gavekort</h4>
+      <p>I december og op til fødselsdage foreslår AI'en gavekort.</p>
+      <div class="upsell-ex">"Vi sælger også gavekort — perfekt gave til en mand der har alt. Vil du vide mere?"</div>
+    </div>
+    <div class="upsell-card">
+      <h4>⭐ Anmeldelse</h4>
+      <p>Efter et besøg sender AI'en en besked med link til Google-anmeldelse.</p>
+      <div class="upsell-ex">"Håber du var tilfreds! Et hurtigt stjerner på Google hjælper os enormt 🙏 [link]"</div>
+    </div>
+  </div>
+</div>
+
+<!-- Sammenfatning -->
+<div class="summary">
+  <div>
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">Tilgængelighed for kunder</div>
+  </div>
+  <div>
+    <div class="stat-num">+25%</div>
+    <div class="stat-label">Estimeret booking-stigning</div>
+  </div>
+  <div>
+    <div class="stat-num">+60kr</div>
+    <div class="stat-label">Ekstra pr. besøg via upsell</div>
+  </div>
+  <div>
+    <div class="stat-num">2x</div>
+    <div class="stat-label">Stamkunder via påmindelser</div>
+  </div>
+</div>
+
+</body>
+</html>
