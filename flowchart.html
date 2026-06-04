@@ -208,6 +208,26 @@
     .stat-num  { font-size: 32px; font-weight: 800; color: var(--gold); }
     .stat-label{ font-size: 12px; color: var(--muted); margin-top: 4px; }
 
+    /* ── ROI banner ── */
+    .roi-banner {
+      max-width: 860px;
+      margin: 0 auto 48px;
+      background: linear-gradient(135deg, rgba(201,168,76,.12), rgba(201,168,76,.06));
+      border: 1px solid rgba(201,168,76,.4);
+      border-radius: 14px;
+      padding: 20px 28px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .roi-icon { font-size: 32px; flex-shrink: 0; }
+    .roi-text {
+      font-size: 16px;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+    .roi-text strong { color: var(--gold); font-size: 18px; }
+
     @media (max-width: 600px) {
       .phases::before { left: 28px; }
       .phase, .phase:nth-child(even) { flex-direction: column !important; }
@@ -219,6 +239,11 @@
 
 <h1>✂️ The Barber Studio</h1>
 <p class="subtitle">AI Vækststrategi — Fra chat-bot til fuld digital forretning</p>
+
+<div class="roi-banner">
+  <span class="roi-icon">💡</span>
+  <span class="roi-text">Får I bare <strong>2 ekstra kunder om måneden</strong> via AI-assistenten, har abonnementet tjent sig selv hjem — resten er ren fortjeneste.</span>
+</div>
 
 <div class="phases">
 
